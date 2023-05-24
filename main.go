@@ -36,15 +36,11 @@ func main() {
 	switch answer {
 	case 1:
 		mahasiswa(&students, &nStudent)
-		break
 	case 2:
 		matkul(&courses, &nCourses)
-		break
 	case 3:
 		showScore(&studentCourses, &nStudentCourses)
-		break
 	case 4:
-		break
 	default:
 		break
 	}
@@ -54,6 +50,9 @@ func header(answer *int) {
 	fmt.Println("\n_________________________________________")
 	fmt.Print("\tAplikasi IGracias Console")
 	fmt.Println("\n-----------------------------------------")
+	fmt.Println("By: Muhammad Farid")
+	fmt.Println("By: Jihan Alifah Maritza")
+	fmt.Println("-----------------------------------------")
 	fmt.Println("1. Data Mahasiswa")
 	fmt.Println("2. Data Mata Kuliah")
 	fmt.Println("3. Data Nilai Mahasiswa")
