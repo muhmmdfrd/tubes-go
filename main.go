@@ -16,14 +16,20 @@ type course struct {
 	uts, uas, quiz float64
 }
 
+type studentScore struct {
+	id, studentId, courseId, sks int
+}
+
 type students [NMAX]student
 type courses [NMAX]course
+type studentCourses [NMAX]studentScore
 
 func main() {
 	var answer int
 	var students students
 	var courses courses
-	var nStudent, nCourses int
+	var studentCourses studentCourses
+	var nStudent, nCourses, nStudentCourses int
 
 	header(&answer)
 
@@ -35,6 +41,7 @@ func main() {
 		matkul(&courses, &nCourses)
 		break
 	case 3:
+		showScore(&studentCourses, &nStudentCourses)
 		break
 	case 4:
 		break
@@ -66,3 +73,10 @@ func matkul(courses *courses, n *int) {
 		fmt.Println(courses[i].name)
 	}
 }
+
+func showScore(studentCourses *studentCourses, n *int) {
+	for i := 0; i < *n; i++ {
+		fmt.Println(studentCourses[i].id)
+	}
+}
+
