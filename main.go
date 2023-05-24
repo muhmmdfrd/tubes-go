@@ -47,7 +47,7 @@ func main() {
 }
 
 func header(answer *int) {
-	fmt.Println("\n_________________________________________")
+	fmt.Println("\n-----------------------------------------")
 	fmt.Print("\tAplikasi IGracias Console")
 	fmt.Println("\n-----------------------------------------")
 	fmt.Println("By: Muhammad Farid")
