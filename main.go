@@ -2,17 +2,17 @@ package main
 
 import "fmt"
 
-const NMAX int = 1000
+const NMAX int = 2000
 
 type student struct {
-	id int
+	id        int
 	nim, name string
-	courseId int
+	courseId  int
 }
 
 type course struct {
-	id int
-	name string
+	id             int
+	name           string
 	uts, uas, quiz float64
 }
 
@@ -27,17 +27,17 @@ func main() {
 
 	header(&answer)
 
-	switch (answer) {
+	switch answer {
 	case 1:
-			mahasiswa(&students, &nStudent)
-		break;
+		mahasiswa(&students, &nStudent)
+		break
 	case 2:
-			matkul(&courses, &nCourses)
-		break;
+		matkul(&courses, &nCourses)
+		break
 	case 3:
-		break;
+		break
 	case 4:
-		break;
+		break
 	default:
 		break
 	}
@@ -54,7 +54,6 @@ func header(answer *int) {
 
 	fmt.Scan(&answer)
 }
-
 
 func mahasiswa(students *students, n *int) {
 	for i := 0; i < *n; i++ {
