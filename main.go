@@ -1,13 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+	"os/exec"
+)
 
 const NMAX int = 2000
 
 type student struct {
 	id        int
 	nim, name string
-	courseId  int
 }
 
 type course struct {
@@ -31,22 +34,21 @@ func main() {
 	var studentCourses studentCourses
 	var nStudent, nCourses, nStudentCourses int
 
-	header(&answer)
+	header()
+	fmt.Scan(&answer)
 
-	switch answer {
-	case 1:
-		mahasiswa(&students, &nStudent)
-	case 2:
+	if answer == 1 {
+		menuMahasiswa(&students, &nStudent)
+	} else if answer == 2 {
+		// Bikin menuMatkul(&courses, &nCourses)
+		// Terus isinya samain aja kayak yang mahasiswa
 		matkul(&courses, &nCourses)
-	case 3:
+	} else if answer == 3 {
 		showScore(&studentCourses, &nStudentCourses)
-	case 4:
-	default:
-		break
 	}
 }
 
-func header(answer *int) {
+func header() {
 	fmt.Println("\n-----------------------------------------")
 	fmt.Print("\tAplikasi IGracias Console")
 	fmt.Println("\n-----------------------------------------")
@@ -57,25 +59,86 @@ func header(answer *int) {
 	fmt.Println("2. Data Mata Kuliah")
 	fmt.Println("3. Data Nilai Mahasiswa")
 	fmt.Println("4. Transkrip Nilai")
-
-	fmt.Scan(&answer)
+	fmt.Println("-----------------------------------------")
+	fmt.Print("Pilih menu: "); 
 }
 
-func mahasiswa(students *students, n *int) {
-	for i := 0; i < *n; i++ {
-		fmt.Println(students[i].name)
+func menuMahasiswa(students *students, n *int) {
+	fmt.Println("-----------------------------------------")
+	fmt.Println("1. Tampilkan Data Mahasiswa")
+	fmt.Println("2. Tambah Data Mahasiswa")
+	fmt.Println("3. Edit Data Mahasiswa")
+	fmt.Println("4. Hapus Data Mahasiswa")
+	fmt.Println("9. Kembali ke Menu Utama")
+	fmt.Println("-----------------------------------------")
+
+	var answer int
+	fmt.Print("Pilih Menu: "); fmt.Scan(&answer)
+
+	if answer == 1 {
+		showMahasiswa(students, n)
+	} else if answer == 2 {
+		inputMahasiswa(students, n)
+	} else if answer == 9 {
+		clear()
+		main()
 	}
+}
+
+func showMahasiswa(students *students, n *int) {
+	if *n == 0 {
+		fmt.Println("Data kosong.")
+		menuMahasiswa(students, n)
+		return
+	}
+
+	for i := 0; i < *n; i++ {
+		data := students[i]
+		fmt.Println(data.id, data.nim, data.name)	
+	}
+
+	menuMahasiswa(students, n)
+}
+
+func inputMahasiswa(students *students, n *int) {
+	var active bool = true
+	var i int = 0
+
+	if *n > 0 {
+		i = *n
+	}
+
+	for active {
+		var s student
+		fmt.Print("NIM: "); fmt.Scan(&s.nim)
+		fmt.Print("NAMA: "); fmt.Scan(&s.name)
+		s.id = i+1
+		students[i] = s
+		i++
+		*n = i
+
+		fmt.Print("Apakah Anda ingin menambah lagi data mahasiswa? (true/false): "); fmt.Scan(&active)
+	}
+	menuMahasiswa(students, n)
 }
 
 func matkul(courses *courses, n *int) {
 	for i := 0; i < *n; i++ {
-		fmt.Println(courses[i].name)
+		data := courses[i]
+		fmt.Println(data.id, data.name, data.quiz, data.uts, data.uas)
 	}
 }
 
 func showScore(studentCourses *studentCourses, n *int) {
 	for i := 0; i < *n; i++ {
-		fmt.Println(studentCourses[i].id)
+		data := studentCourses[i]
+		fmt.Println(data.id, data.studentId, data.courseId, data.sks)
 	}
+}
+
+func clear() {
+	cmd := exec.Command("cmd", "/c", "cls")
+  cmd.Stdout = os.Stdout
+  cmd.Run()
 }
 
