@@ -40,9 +40,7 @@ func main() {
 	if answer == 1 {
 		menuMahasiswa(&students, &nStudent)
 	} else if answer == 2 {
-		// Bikin menuMatkul(&courses, &nCourses)
-		// Terus isinya samain aja kayak yang mahasiswa
-		matkul(&courses, &nCourses)
+		menuMatkul(&courses, &nCourses)
 	} else if answer == 3 {
 		showScore(&studentCourses, &nStudentCourses)
 	}
@@ -122,10 +120,25 @@ func inputMahasiswa(students *students, n *int) {
 	menuMahasiswa(students, n)
 }
 
-func matkul(courses *courses, n *int) {
-	for i := 0; i < *n; i++ {
-		data := courses[i]
-		fmt.Println(data.id, data.name, data.quiz, data.uts, data.uas)
+func menuMatkul(courses *courses, n *int) {
+	fmt.Println("-----------------------------------------")
+	fmt.Println("1. Tampilkan Data Mahasiswa")
+	fmt.Println("2. Tambah Data Mahasiswa")
+	fmt.Println("3. Edit Data Mahasiswa")
+	fmt.Println("4. Hapus Data Mahasiswa")
+	fmt.Println("9. Kembali ke Menu Utama")
+	fmt.Println("-----------------------------------------")
+
+	var answer int
+	fmt.Print("Pilih Menu: "); fmt.Scan(&answer)
+
+	if answer == 1 {
+		// showMatkul
+	} else if answer == 2 {
+		// input matkul
+	} else if answer == 9 {
+		clear()
+		main()
 	}
 }
 
