@@ -58,7 +58,7 @@ func header() {
 	fmt.Println("3. Data Nilai Mahasiswa")
 	fmt.Println("4. Transkrip Nilai")
 	fmt.Println("-----------------------------------------")
-	fmt.Print("Pilih menu: "); 
+	fmt.Print("Pilih menu: ")
 }
 
 func menuMahasiswa(students *students, n *int) {
@@ -71,7 +71,8 @@ func menuMahasiswa(students *students, n *int) {
 	fmt.Println("-----------------------------------------")
 
 	var answer int
-	fmt.Print("Pilih Menu: "); fmt.Scan(&answer)
+	fmt.Print("Pilih Menu: ")
+	fmt.Scan(&answer)
 
 	if answer == 1 {
 		showMahasiswa(students, n)
@@ -92,7 +93,7 @@ func showMahasiswa(students *students, n *int) {
 
 	for i := 0; i < *n; i++ {
 		data := students[i]
-		fmt.Println(data.id, data.nim, data.name)	
+		fmt.Println(data.id, data.nim, data.name)
 	}
 
 	menuMahasiswa(students, n)
@@ -108,38 +109,86 @@ func inputMahasiswa(students *students, n *int) {
 
 	for active {
 		var s student
-		fmt.Print("NIM: "); fmt.Scan(&s.nim)
-		fmt.Print("NAMA: "); fmt.Scan(&s.name)
-		s.id = i+1
+		fmt.Print("NIM: ")
+		fmt.Scan(&s.nim)
+		fmt.Print("NAMA: ")
+		fmt.Scan(&s.name)
+		s.id = i + 1
 		students[i] = s
 		i++
 		*n = i
 
-		fmt.Print("Apakah Anda ingin menambah lagi data mahasiswa? (true/false): "); fmt.Scan(&active)
+		fmt.Print("Apakah Anda ingin menambah lagi data mahasiswa? (true/false): ")
+		fmt.Scan(&active)
 	}
 	menuMahasiswa(students, n)
 }
 
 func menuMatkul(courses *courses, n *int) {
 	fmt.Println("-----------------------------------------")
-	fmt.Println("1. Tampilkan Data Mahasiswa")
-	fmt.Println("2. Tambah Data Mahasiswa")
-	fmt.Println("3. Edit Data Mahasiswa")
-	fmt.Println("4. Hapus Data Mahasiswa")
+	fmt.Println("1. Tampilkan Data Mata Kuliah")
+	fmt.Println("2. Tambah Data Mata Kuliah")
+	fmt.Println("3. Edit Data Mata Kuliah")
+	fmt.Println("4. Hapus Data Mata Kuliah")
 	fmt.Println("9. Kembali ke Menu Utama")
 	fmt.Println("-----------------------------------------")
 
 	var answer int
-	fmt.Print("Pilih Menu: "); fmt.Scan(&answer)
+	fmt.Print("Pilih Menu: ")
+	fmt.Scan(&answer)
 
 	if answer == 1 {
-		// showMatkul
+		showMatkul(courses, n)
 	} else if answer == 2 {
-		// input matkul
+		inputMatkul(courses, n)
 	} else if answer == 9 {
 		clear()
 		main()
 	}
+}
+
+func showMatkul(courses *courses, n *int) {
+	if *n == 0 {
+		fmt.Println("Data kosong.")
+		menuMatkul(courses, n)
+		return
+	}
+
+	for i := 0; i < *n; i++ {
+		data := courses[i]
+		fmt.Println(data.id, data.name, data.quiz, data.uts, data.uas)
+	}
+
+	menuMatkul(courses, n)
+}
+
+func inputMatkul(courses *courses, n *int) {
+	var active bool = true
+	var i int = 0
+
+	if *n > 0 {
+		i = *n
+	}
+
+	for active {
+		var c course
+		fmt.Print("NAMA: ")
+		fmt.Scan(&c.name)
+		fmt.Print("QUIZ: ")
+		fmt.Scan(&c.quiz)
+		fmt.Print("UTS: ")
+		fmt.Scan(&c.uts)
+		fmt.Print("UAS: ")
+		fmt.Scan(&c.uas)
+		c.id = i + 1
+		courses[i] = c
+		i++
+		*n = i
+
+		fmt.Print("Apakah Anda ingin menambah lagi data mahasiswa? (true/false): ")
+		fmt.Scan(&active)
+	}
+	menuMatkul(courses, n)
 }
 
 func showScore(studentCourses *studentCourses, n *int) {
@@ -151,7 +200,6 @@ func showScore(studentCourses *studentCourses, n *int) {
 
 func clear() {
 	cmd := exec.Command("cmd", "/c", "cls")
-  cmd.Stdout = os.Stdout
-  cmd.Run()
+	cmd.Stdout = os.Stdout
+	cmd.Run()
 }
-
