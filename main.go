@@ -16,11 +16,11 @@ type student struct {
 type course struct {
 	id             int
 	name           string
-	uts, uas, quiz float64
 }
 
 type studentScore struct {
 	id, studentId, courseId, sks int
+	uts, uas, quiz float64
 }
 
 type students [NMAX]student
@@ -156,7 +156,7 @@ func showMatkul(courses *courses, n *int) {
 
 	for i := 0; i < *n; i++ {
 		data := courses[i]
-		fmt.Println(data.id, data.name, data.quiz, data.uts, data.uas)
+		fmt.Println(data.id, data.name)
 	}
 
 	menuMatkul(courses, n)
@@ -174,12 +174,6 @@ func inputMatkul(courses *courses, n *int) {
 		var c course
 		fmt.Print("NAMA: ")
 		fmt.Scan(&c.name)
-		fmt.Print("QUIZ: ")
-		fmt.Scan(&c.quiz)
-		fmt.Print("UTS: ")
-		fmt.Scan(&c.uts)
-		fmt.Print("UAS: ")
-		fmt.Scan(&c.uas)
 		c.id = i + 1
 		courses[i] = c
 		i++
