@@ -25,13 +25,13 @@ type studentScore struct {
 
 type students [NMAX]student
 type courses [NMAX]course
-type studentCourses [NMAX]studentScore
+type studentScores [NMAX]studentScore
 
 var answer int
 var studentsData students
 var coursesData courses
-var studentCoursesData studentCourses
-var nStudent, nCourses, nStudentCourses int
+var studentScoresData studentScores
+var nStudent, nCourses, nstudentScores int
 
 func main() {
 	header()
@@ -43,7 +43,9 @@ func main() {
 	} else if answer == 2 {
 		menuMatkul(&coursesData, &nCourses)
 	} else if answer == 3 {
-		showScore(&studentCoursesData, &nStudentCourses)
+		menuNilaiMahasiswa(&studentScoresData, &nstudentScores)
+	} else if answer == 4 {
+		// TODO: Transkrip nilai
 	}
 }
 
@@ -247,10 +249,119 @@ func inputMatkul(courses *courses, n *int) {
 	}
 }
 
-func showScore(studentCourses *studentCourses, n *int) {
+func menuNilaiMahasiswa(studentScores *studentScores, n *int) {
+	fmt.Println("-----------------------------------------")
+	fmt.Println("1. Tampilkan Data Nilai Mahasiswa")
+	fmt.Println("2. Tambah Data Nilai Mahasiswa")
+	fmt.Println("3. Edit Data Nilai Mahasiswa")
+	fmt.Println("4. Hapus Data Nilai Mahasiswa")
+	fmt.Println("9. Kembali ke Menu Utama")
+	fmt.Println("-----------------------------------------")
+
+	var answer int
+	fmt.Print("Pilih Menu: ")
+	fmt.Scan(&answer)
+
+	if answer == 1 {
+		showNilaiMahasiswa(studentScores, n)
+		menuNilaiMahasiswa(studentScores, n)
+	} else if answer == 2 {
+		// inputNilaiMahasiswa(studentScores, n)
+		menuNilaiMahasiswa(studentScores, n)
+	} else if answer == 3 {
+		var id int
+		fmt.Print("Pilih id untuk mengedit data mahasiswa: "); fmt.Scan(&id)
+		// editMahasiswa(id, studentScores, n)
+		showNilaiMahasiswa(studentScores, n)
+		menuNilaiMahasiswa(studentScores, n)
+	} else if answer == 4 {
+		var id int
+		fmt.Print("Pilih id untuk menghapus data mahasiswa: "); fmt.Scan(&id)
+		// deleteMahasiswa(id, studentScores, n)
+		showNilaiMahasiswa(studentScores, n)
+		menuNilaiMahasiswa(studentScores, n)
+	} else if answer == 9 {
+		clear()
+		main()
+	}
+}
+
+func showNilaiMahasiswa(studentScores *studentScores, n *int) {
+	if *n == 0 {
+		fmt.Println("Data kosong.")
+		return
+	}
+
 	for i := 0; i < *n; i++ {
-		data := studentCourses[i]
+		data := studentScores[i]
 		fmt.Println(data.id, data.studentId, data.courseId, data.sks, data.quiz, data.uts, data.uas)
+	}
+}
+
+func inputNilaiMahasiswa(studentScores *studentScores, students students, courses courses, nStudent, nCourse int, n *int) {
+	var active bool = true
+	var i int = 0
+
+	if *n > 0 {
+		i = *n
+	}
+
+	for active {
+		var studentIdx int = -1
+		var searchStudent bool = true
+
+		for searchStudent {
+			var idx int
+			fmt.Print("Masukkan ID Mahasiswa: "); fmt.Scan(&idx)
+			studentIdx = searchMahasiswaById(idx, students, nStudent)
+
+			if studentIdx == -1 {
+				fmt.Printf("Data mahasiswa dengan ID %d tidak ditemukan.\n", idx)
+				fmt.Print("Apakah Anda ingin memasukkan kembali ID mahasiswa? (true/false): "); fmt.Scan(&searchStudent)
+				return
+			}
+		}
+
+		if studentIdx != -1 {
+			fmt.Printf("Mahasiswa yang dipilih dengan nama %s\n", students[studentIdx].name)
+		}
+
+		var courseIdx int = -1
+		var searchCourse bool = true
+
+		for searchCourse {
+			var idx int
+			fmt.Print("Masukkan ID Mata Kuliah: "); fmt.Scan(&idx)
+			// TODO: pakai func ini kalo dari Jihan udah selesai
+			// courseIdx = searchMahasiswaById(idx, students, nStudent)
+
+			if courseIdx == -1 {
+				fmt.Printf("Data mata kuliah dengan ID %d tidak ditemukan.\n", idx)
+				fmt.Print("Apakah Anda ingin memasukkan kembali ID mata kuliah? (true/false): "); fmt.Scan(&searchCourse)
+				return
+			}
+		}
+
+		if courseIdx != -1 {
+			fmt.Printf("Nama mata kuliah yang dipilih adalah %s\n", courses[courseIdx].name)
+		}
+
+		var ss studentScore
+		fmt.Print("ID: "); fmt.Scan(&ss.id)
+		fmt.Print("SKS: "); fmt.Scan(&ss.sks)
+		fmt.Print("QUIZ: "); fmt.Scan(&ss.quiz)
+		fmt.Print("UTS: "); fmt.Scan(&ss.uts)
+		fmt.Print("UAS: "); fmt.Scan(&ss.uas)
+
+		ss.courseId = courses[courseIdx].id
+		ss.studentId = students[studentIdx].id
+		
+		studentScores[i] = ss
+		i++
+		*n = i
+
+		fmt.Print("Apakah Anda ingin menambah lagi data nilai mahasiswa? (true/false): ")
+		fmt.Scan(&active)
 	}
 }
 
