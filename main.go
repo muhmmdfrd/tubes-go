@@ -14,13 +14,13 @@ type student struct {
 }
 
 type course struct {
-	id             int
-	name           string
+	id   int
+	name string
 }
 
 type studentScore struct {
 	id, studentId, courseId, sks int
-	uts, uas, quiz float64
+	uts, uas, quiz               float64
 }
 
 type students [NMAX]student
