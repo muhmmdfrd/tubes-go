@@ -85,13 +85,15 @@ func menuMahasiswa(students *students, n *int) {
 		menuMahasiswa(students, n)
 	} else if answer == 3 {
 		var id int
-		fmt.Print("Pilih id untuk mengedit data mahasiswa: "); fmt.Scan(&id)
+		fmt.Print("Pilih id untuk mengedit data mahasiswa: ")
+		fmt.Scan(&id)
 		editMahasiswa(id, students, n)
 		showMahasiswa(students, n)
 		menuMahasiswa(students, n)
 	} else if answer == 4 {
 		var id int
-		fmt.Print("Pilih id untuk menghapus data mahasiswa: "); fmt.Scan(&id)
+		fmt.Print("Pilih id untuk menghapus data mahasiswa: ")
+		fmt.Scan(&id)
 		deleteMahasiswa(id, students, n)
 		showMahasiswa(students, n)
 		menuMahasiswa(students, n)
@@ -123,9 +125,12 @@ func inputMahasiswa(students *students, n *int) {
 
 	for active {
 		var s student
-		fmt.Print("ID: "); fmt.Scan(&s.id)
-		fmt.Print("NIM: "); fmt.Scan(&s.nim)
-		fmt.Print("NAMA: "); fmt.Scan(&s.name)
+		fmt.Print("ID: ")
+		fmt.Scan(&s.id)
+		fmt.Print("NIM: ")
+		fmt.Scan(&s.nim)
+		fmt.Print("NAMA: ")
+		fmt.Scan(&s.name)
 		students[i] = s
 		i++
 		*n = i
@@ -144,8 +149,10 @@ func editMahasiswa(id int, students *students, n *int) {
 	}
 
 	var s student
-	fmt.Printf("NIM (%s): ", students[idx].nim); fmt.Scan(&s.nim)
-	fmt.Printf("NAMA (%s): ", students[idx].name); fmt.Scan(&s.name)
+	fmt.Printf("NIM (%s): ", students[idx].nim)
+	fmt.Scan(&s.nim)
+	fmt.Printf("NAMA (%s): ", students[idx].name)
+	fmt.Scan(&s.name)
 
 	if s.nim != "" {
 		students[idx].nim = s.nim
@@ -166,7 +173,7 @@ func deleteMahasiswa(id int, students *students, n *int) {
 	}
 
 	i = idx
-	for i <= *n - 2 {
+	for i <= *n-2 {
 		students[i] = students[i+1]
 		i++
 	}
@@ -175,10 +182,10 @@ func deleteMahasiswa(id int, students *students, n *int) {
 
 func searchMahasiswaById(id int, students students, n int) int {
 	var start int = 0
-	var end int = n-1
+	var end int = n - 1
 
 	for start <= end {
-		var mid int = start + (end-start) / 2
+		var mid int = start + (end-start)/2
 		if students[mid].id == id {
 			return mid
 		} else if students[mid].id < id {
@@ -187,7 +194,7 @@ func searchMahasiswaById(id int, students students, n int) int {
 			end = mid - 1
 		}
 	}
-  return -1
+	return -1
 }
 
 func menuMatkul(courses *courses, n *int) {
@@ -208,6 +215,20 @@ func menuMatkul(courses *courses, n *int) {
 		menuMatkul(courses, n)
 	} else if answer == 2 {
 		inputMatkul(courses, n)
+		menuMatkul(courses, n)
+	} else if answer == 3 {
+		var id int
+		fmt.Print("Pilih id untuk mengedit data matakuliah: ")
+		fmt.Scan(&id)
+		editMatkul(id, courses, n)
+		showMatkul(courses, n)
+		menuMatkul(courses, n)
+	} else if answer == 4 {
+		var id int
+		fmt.Print("Pilih id untuk menghapus data matakuliah: ")
+		fmt.Scan(&id)
+		deleteMatkul(id, courses, n)
+		showMatkul(courses, n)
 		menuMatkul(courses, n)
 	} else if answer == 9 {
 		clear()
@@ -238,8 +259,10 @@ func inputMatkul(courses *courses, n *int) {
 
 	for active {
 		var c course
-		fmt.Print("ID: "); fmt.Scan(&c.id)
-		fmt.Print("NAMA: "); fmt.Scan(&c.name)
+		fmt.Print("ID: ")
+		fmt.Scan(&c.id)
+		fmt.Print("NAMA: ")
+		fmt.Scan(&c.name)
 		courses[i] = c
 		i++
 		*n = i
@@ -247,6 +270,57 @@ func inputMatkul(courses *courses, n *int) {
 		fmt.Print("Apakah Anda ingin menambah lagi data mahasiswa? (true/false): ")
 		fmt.Scan(&active)
 	}
+}
+
+func editMatkul(id int, courses *courses, n *int) {
+	var idx int = searchMatkulById(id, *courses, *n)
+
+	if idx == -1 {
+		fmt.Printf("Data matakuliah dengan id %d tidak ditemukan.\n", id)
+		return
+	}
+
+	var c course
+	fmt.Printf("NAMA (%s): ", courses[idx].name)
+	fmt.Scan(&c.name)
+
+	if c.name != "" {
+		courses[idx].name = c.name
+	}
+}
+
+func deleteMatkul(id int, courses *courses, n *int) {
+	var idx, i int
+	idx = searchMatkulById(id, *courses, *n)
+
+	if idx == -1 {
+		fmt.Printf("Data matakuliah dengan id %d tidak ditemukan.\n", id)
+		return
+	}
+
+	i = idx
+	for i <= *n-2 {
+		courses[i] = courses[i+1]
+		i++
+	}
+	*n--
+}
+
+func searchMatkulById(id int, courses courses, n int) int {
+	var start int = 0
+	var end int = n - 1
+
+	for start <= end {
+		var mid int = start + (end-start)/2
+		if courses[mid].id == id {
+			return mid
+		} else if courses[mid].id < id {
+			start = mid + 1
+		} else {
+			end = mid - 1
+		}
+	}
+	return -1
 }
 
 func menuNilaiMahasiswa(studentScores *studentScores, n *int) {
@@ -270,13 +344,15 @@ func menuNilaiMahasiswa(studentScores *studentScores, n *int) {
 		menuNilaiMahasiswa(studentScores, n)
 	} else if answer == 3 {
 		var id int
-		fmt.Print("Pilih id untuk mengedit data mahasiswa: "); fmt.Scan(&id)
+		fmt.Print("Pilih id untuk mengedit data mahasiswa: ")
+		fmt.Scan(&id)
 		// editMahasiswa(id, studentScores, n)
 		showNilaiMahasiswa(studentScores, n)
 		menuNilaiMahasiswa(studentScores, n)
 	} else if answer == 4 {
 		var id int
-		fmt.Print("Pilih id untuk menghapus data mahasiswa: "); fmt.Scan(&id)
+		fmt.Print("Pilih id untuk menghapus data mahasiswa: ")
+		fmt.Scan(&id)
 		// deleteMahasiswa(id, studentScores, n)
 		showNilaiMahasiswa(studentScores, n)
 		menuNilaiMahasiswa(studentScores, n)
@@ -312,12 +388,14 @@ func inputNilaiMahasiswa(studentScores *studentScores, students students, course
 
 		for searchStudent {
 			var idx int
-			fmt.Print("Masukkan ID Mahasiswa: "); fmt.Scan(&idx)
+			fmt.Print("Masukkan ID Mahasiswa: ")
+			fmt.Scan(&idx)
 			studentIdx = searchMahasiswaById(idx, students, nStudent)
 
 			if studentIdx == -1 {
 				fmt.Printf("Data mahasiswa dengan ID %d tidak ditemukan.\n", idx)
-				fmt.Print("Apakah Anda ingin memasukkan kembali ID mahasiswa? (true/false): "); fmt.Scan(&searchStudent)
+				fmt.Print("Apakah Anda ingin memasukkan kembali ID mahasiswa? (true/false): ")
+				fmt.Scan(&searchStudent)
 				return
 			}
 		}
@@ -331,13 +409,15 @@ func inputNilaiMahasiswa(studentScores *studentScores, students students, course
 
 		for searchCourse {
 			var idx int
-			fmt.Print("Masukkan ID Mata Kuliah: "); fmt.Scan(&idx)
+			fmt.Print("Masukkan ID Mata Kuliah: ")
+			fmt.Scan(&idx)
 			// TODO: pakai func ini kalo dari Jihan udah selesai
 			// courseIdx = searchMahasiswaById(idx, students, nStudent)
 
 			if courseIdx == -1 {
 				fmt.Printf("Data mata kuliah dengan ID %d tidak ditemukan.\n", idx)
-				fmt.Print("Apakah Anda ingin memasukkan kembali ID mata kuliah? (true/false): "); fmt.Scan(&searchCourse)
+				fmt.Print("Apakah Anda ingin memasukkan kembali ID mata kuliah? (true/false): ")
+				fmt.Scan(&searchCourse)
 				return
 			}
 		}
@@ -347,15 +427,20 @@ func inputNilaiMahasiswa(studentScores *studentScores, students students, course
 		}
 
 		var ss studentScore
-		fmt.Print("ID: "); fmt.Scan(&ss.id)
-		fmt.Print("SKS: "); fmt.Scan(&ss.sks)
-		fmt.Print("QUIZ: "); fmt.Scan(&ss.quiz)
-		fmt.Print("UTS: "); fmt.Scan(&ss.uts)
-		fmt.Print("UAS: "); fmt.Scan(&ss.uas)
+		fmt.Print("ID: ")
+		fmt.Scan(&ss.id)
+		fmt.Print("SKS: ")
+		fmt.Scan(&ss.sks)
+		fmt.Print("QUIZ: ")
+		fmt.Scan(&ss.quiz)
+		fmt.Print("UTS: ")
+		fmt.Scan(&ss.uts)
+		fmt.Print("UAS: ")
+		fmt.Scan(&ss.uas)
 
 		ss.courseId = courses[courseIdx].id
 		ss.studentId = students[studentIdx].id
-		
+
 		studentScores[i] = ss
 		i++
 		*n = i
