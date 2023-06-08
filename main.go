@@ -267,7 +267,7 @@ func inputMatkul(courses *courses, n *int) {
 		i++
 		*n = i
 
-		fmt.Print("Apakah Anda ingin menambah lagi data mahasiswa? (true/false): ")
+		fmt.Print("Apakah Anda ingin menambah lagi data matakuliah? (true/false): ")
 		fmt.Scan(&active)
 	}
 }
