@@ -68,6 +68,11 @@ func header() {
 }
 
 func menuMahasiswa(students *students, n *int) {
+	fmt.Println("\n-----------------------------------------")
+	fmt.Print("\tAplikasi IGracias Console")
+	fmt.Println("\n-----------------------------------------")
+	fmt.Println("By: Muhammad Farid")
+	fmt.Println("By: Jihan Alifah Maritza")
 	fmt.Println("-----------------------------------------")
 	fmt.Println("1. Tampilkan Data Mahasiswa")
 	fmt.Println("2. Tambah Data Mahasiswa")
@@ -222,6 +227,11 @@ func searchMahasiswaByNim(nim string, students students, n int) int {
 }
 
 func menuMatkul(courses *courses, n *int) {
+	fmt.Println("\n-----------------------------------------")
+	fmt.Print("\tAplikasi IGracias Console")
+	fmt.Println("\n-----------------------------------------")
+	fmt.Println("By: Muhammad Farid")
+	fmt.Println("By: Jihan Alifah Maritza")
 	fmt.Println("-----------------------------------------")
 	fmt.Println("1. Tampilkan Data Mata Kuliah")
 	fmt.Println("2. Tambah Data Mata Kuliah")
@@ -366,6 +376,11 @@ func searchMatkulByStudentId(studentId int, studentstudentScores studentScores, 
 }
 
 func menuNilaiMahasiswa(studentScores *studentScores, students students, courses courses, nStudent, nCourse int, n *int) {
+	fmt.Println("\n-----------------------------------------")
+	fmt.Print("\tAplikasi IGracias Console")
+	fmt.Println("\n-----------------------------------------")
+	fmt.Println("By: Muhammad Farid")
+	fmt.Println("By: Jihan Alifah Maritza")
 	fmt.Println("-----------------------------------------")
 	fmt.Println("1. Tampilkan Data Nilai Mahasiswa")
 	fmt.Println("2. Tambah Data Nilai Mahasiswa")
@@ -399,13 +414,30 @@ func menuNilaiMahasiswa(studentScores *studentScores, students students, courses
 		var id int
 		fmt.Print("Pilih id untuk menghapus data mahasiswa: ")
 		fmt.Scan(&id)
-		// deleteMahasiswa(id, studentScores, n)
+		deleteNilaiMahasiswa(id, studentScores, n)
 		showNilaiMahasiswa(studentScores, students, courses, nStudent, nCourse, n)
 		menuNilaiMahasiswa(studentScores, students, courses, nStudent, nCourse, n)
 	} else if answer == 9 {
 		clear()
 		main()
 	}
+}
+
+func deleteNilaiMahasiswa(id int, studentsScoresData *studentScores, n *int) {
+	var idx, i int
+	idx = searchNilaiMahasiswaById(id, *studentsScoresData, *n)
+
+	if idx == -1 {
+		fmt.Printf("Data nilai mahasiswa dengan id %d tidak ditemukan.\n", id)
+		return
+	}
+
+	i = idx
+	for i <= *n-2 {
+		studentsScoresData[i] = studentsScoresData[i+1]
+		i++
+	}
+	*n--
 }
 
 func showNilaiMahasiswa(studentScores *studentScores, students students, courses courses, nStudent, nCourse int, n *int) {
@@ -423,6 +455,23 @@ func showNilaiMahasiswa(studentScores *studentScores, students students, courses
 
 		fmt.Println(data.id, student.nim, student.name, course.name, data.sks, data.quiz, data.uts, data.uas)
 	}
+}
+
+func searchNilaiMahasiswaById(id int, studentScores studentScores, n int) int {
+	var start int = 0
+	var end int = n - 1
+
+	for start <= end {
+		var mid int = start + (end-start)/2
+		if studentScores[mid].id == id {
+			return mid
+		} else if studentScores[mid].id < id {
+			start = mid + 1
+		} else {
+			end = mid - 1
+		}
+	}
+	return -1
 }
 
 func inputNilaiMahasiswa(studentScores *studentScores, students students, courses courses, nStudent, nCourse int, n *int) {
@@ -479,60 +528,85 @@ func inputNilaiMahasiswa(studentScores *studentScores, students students, course
 			fmt.Printf("Nama mata kuliah yang dipilih adalah %s\n", courses[courseIdx].name)
 		}
 
-		var ss studentScore
-		fmt.Print("ID: ")
-		fmt.Scan(&ss.id)
-		fmt.Print("SKS: ")
-		fmt.Scan(&ss.sks)
-		fmt.Print("QUIZ: ")
-		fmt.Scan(&ss.quiz)
-		fmt.Print("UTS: ")
-		fmt.Scan(&ss.uts)
-		fmt.Print("UAS: ")
-		fmt.Scan(&ss.uas)
-
-		ss.courseId = courses[courseIdx].id
-		ss.studentId = students[studentIdx].id
-
-		studentScores[i] = ss
-		i++
-		*n = i
-
-		fmt.Print("Apakah Anda ingin menambah lagi data nilai mahasiswa? (true/false): ")
-		fmt.Scan(&active)
+		if courseIdx != -1 && studentIdx != -1 {
+			var ss studentScore
+			fmt.Print("ID: ")
+			fmt.Scan(&ss.id)
+			fmt.Print("SKS: ")
+			fmt.Scan(&ss.sks)
+			fmt.Print("QUIZ: ")
+			fmt.Scan(&ss.quiz)
+			fmt.Print("UTS: ")
+			fmt.Scan(&ss.uts)
+			fmt.Print("UAS: ")
+			fmt.Scan(&ss.uas)
+	
+			ss.courseId = courses[courseIdx].id
+			ss.studentId = students[studentIdx].id
+	
+			studentScores[i] = ss
+			i++
+			*n = i
+	
+			fmt.Print("Apakah Anda ingin menambah lagi data nilai mahasiswa? (true/false): ")
+			fmt.Scan(&active)
+		}
 	}
 }
 
 func transcript(students students, courses courses, studentScoresData studentScores, nStudent, nstudentScores int) {
-	var nim string
-	fmt.Print("Cari nilai mahasiswa berdasarkan NIM: "); fmt.Scan(&nim)
+	fmt.Println("\n-----------------------------------------")
+	fmt.Print("\tAplikasi IGracias Console")
+	fmt.Println("\n-----------------------------------------")
+	fmt.Println("By: Muhammad Farid")
+	fmt.Println("By: Jihan Alifah Maritza")
+	fmt.Println("\n-----------------------------------------")
 
-	var idx int = searchMahasiswaByNim(nim, students, nStudent)
+	var active bool = true
+	for active {
+		var searchStudent bool = true
+		var idx int = -1
 
-	if idx == -1 {
-		fmt.Println("Data mahasiswa tidak ditemukan")
-		return
-	}
-
-	var student student = students[idx]
-
-	var courseIds, length = searchMatkulByStudentId(student.id, studentScoresData, nstudentScores)
-
-	var result studentScores
-	var counter int = 0
-
-	for i := 0; i < nstudentScores; i++ {
-		for j := 0; j < length; j++ {
-			if studentScoresData[i].courseId == courseIds[j] {
-				result[counter] = studentScoresData[i]
-				counter++
+		for searchStudent {
+			var nim string
+			fmt.Print("Cari nilai mahasiswa berdasarkan NIM: "); fmt.Scan(&nim)
+	
+			idx = searchMahasiswaByNim(nim, students, nStudent)
+	
+			if idx == -1 {
+				fmt.Printf("Data mahasiswa dengan NIM %s tidak ditemukan.\n", nim)
+				fmt.Print("Apakah Anda ingin memasukkan kembali ID mahasiswa? (true/false): ")
+				fmt.Scan(&searchStudent)
+			} else {
+				searchStudent = false
 			}
 		}
-	}
 
-	for i := 0; i <= counter; i++ {
-		fmt.Println(student.nim, student.name, courses[i].name, studentScoresData[i].sks, studentScoresData[i].quiz, studentScoresData[i].uts, studentScoresData[i].uas)
-	}	
+		if idx != -1 {
+			var student student = students[idx]
+			var courseIds, length = searchMatkulByStudentId(student.id, studentScoresData, nstudentScores)
+			var result studentScores
+			var counter int = 0
+
+			for i := 0; i < nstudentScores; i++ {
+				for j := 0; j < length; j++ {
+					if studentScoresData[i].courseId == courseIds[j] {
+						result[counter] = studentScoresData[i]
+						counter++
+					}
+				}
+			}
+
+			for i := 0; i < counter; i++ {
+				fmt.Println(student.nim, student.name, courses[i].name, studentScoresData[i].sks, studentScoresData[i].quiz, studentScoresData[i].uts, studentScoresData[i].uas)
+			}
+
+			fmt.Print("Apakah Anda ingin melanjutkan menampilkan transkrip nilai mahasiswa? (true/false): ");
+			fmt.Scan(&active)
+		}	
+	}
+	clear()
+	main()
 }
 
 func clear() {
