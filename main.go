@@ -406,7 +406,7 @@ func menuNilaiMahasiswa(studentScores *studentScores, students students, courses
 		var id int
 		fmt.Print("Pilih id untuk mengedit data mahasiswa: ")
 		fmt.Scan(&id)
-		// editMahasiswa(id, studentScores, n)
+		editNilaiMahasiswa(id, studentScores, n)
 		showNilaiMahasiswa(studentScores, students, courses, nStudent, nCourse, n)
 		menuNilaiMahasiswa(studentScores, students, courses, nStudent, nCourse, n)
 	} else if answer == 4 {
@@ -420,6 +420,41 @@ func menuNilaiMahasiswa(studentScores *studentScores, students students, courses
 	} else if answer == 9 {
 		clear()
 		main()
+	}
+}
+
+func editNilaiMahasiswa(id int, studentScores *studentScores, n *int) {
+	var idx int = searchNilaiMahasiswaById(id, *studentScores, *n)
+
+	if idx == -1 {
+		fmt.Printf("Data nilai mahasiswa dengan id %d tidak ditemukan.\n", id)
+		return
+	}
+
+	var s studentScore
+	fmt.Printf("SKS (%d): ", studentScores[idx].sks)
+	fmt.Scan(&s.sks)
+	fmt.Printf("QUIZ (%f): ", studentScores[idx].quiz)
+	fmt.Scan(&s.quiz)
+	fmt.Printf("UTS (%f): ", studentScores[idx].uts)
+	fmt.Scan(&s.uts)
+	fmt.Printf("UAS (%f): ", studentScores[idx].uas)
+	fmt.Scan(&s.uas)
+
+	if s.sks != 0 {
+		studentScores[idx].sks = s.sks
+	}
+
+	if s.quiz != 0 {
+		studentScores[idx].quiz = s.quiz
+	}
+
+	if s.uts != 0 {
+		studentScores[idx].uts = s.uts
+	}
+
+	if s.uas != 0 {
+		studentScores[idx].uas = s.uas
 	}
 }
 
