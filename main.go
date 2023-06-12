@@ -372,7 +372,7 @@ func searchMatkulByStudentId(studentId int, studentstudentScores studentScores, 
 		}
 	}
 
-	return ids, counter+1
+	return ids, counter + 1
 }
 
 func menuNilaiMahasiswa(studentScores *studentScores, students students, courses courses, nStudent, nCourse int, n *int) {
@@ -575,14 +575,14 @@ func inputNilaiMahasiswa(studentScores *studentScores, students students, course
 			fmt.Scan(&ss.uts)
 			fmt.Print("UAS: ")
 			fmt.Scan(&ss.uas)
-	
+
 			ss.courseId = courses[courseIdx].id
 			ss.studentId = students[studentIdx].id
-	
+
 			studentScores[i] = ss
 			i++
 			*n = i
-	
+
 			fmt.Print("Apakah Anda ingin menambah lagi data nilai mahasiswa? (true/false): ")
 			fmt.Scan(&active)
 		}
@@ -604,10 +604,11 @@ func transcript(students students, courses courses, studentScoresData studentSco
 
 		for searchStudent {
 			var nim string
-			fmt.Print("Cari nilai mahasiswa berdasarkan NIM: "); fmt.Scan(&nim)
-	
+			fmt.Print("Cari nilai mahasiswa berdasarkan NIM: ")
+			fmt.Scan(&nim)
+
 			idx = searchMahasiswaByNim(nim, students, nStudent)
-	
+
 			if idx == -1 {
 				fmt.Printf("Data mahasiswa dengan NIM %s tidak ditemukan.\n", nim)
 				fmt.Print("Apakah Anda ingin memasukkan kembali ID mahasiswa? (true/false): ")
@@ -636,9 +637,9 @@ func transcript(students students, courses courses, studentScoresData studentSco
 				fmt.Println(student.nim, student.name, courses[i].name, studentScoresData[i].sks, studentScoresData[i].quiz, studentScoresData[i].uts, studentScoresData[i].uas)
 			}
 
-			fmt.Print("Apakah Anda ingin melanjutkan menampilkan transkrip nilai mahasiswa? (true/false): ");
+			fmt.Print("Apakah Anda ingin melanjutkan menampilkan transkrip nilai mahasiswa? (true/false): ")
 			fmt.Scan(&active)
-		}	
+		}
 	}
 	clear()
 	main()
