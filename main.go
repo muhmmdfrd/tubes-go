@@ -27,13 +27,13 @@ type students [NMAX]student
 type courses [NMAX]course
 type studentScores [NMAX]studentScore
 
-var answer int
 var studentsData students
 var coursesData courses
 var studentScoresData studentScores
 var nStudent, nCourses, nstudentScores int
 
 func main() {
+	var answer int
 	header()
 	fmt.Scan(&answer)
 
