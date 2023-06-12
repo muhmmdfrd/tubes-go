@@ -106,7 +106,7 @@ func menuMahasiswa(students *students, n *int) {
 		var id int
 		fmt.Print("Pilih id untuk menghapus data mahasiswa: ")
 		fmt.Scan(&id)
-		deleteMahasiswa(id, students, n)
+		deleteMahasiswa(id, students, n, studentScoresData, nstudentScores)
 		showMahasiswa(students, n)
 		menuMahasiswa(students, n)
 	} else if answer == 9 {
@@ -175,12 +175,19 @@ func editMahasiswa(id int, students *students, n *int) {
 	}
 }
 
-func deleteMahasiswa(id int, students *students, n *int) {
+func deleteMahasiswa(id int, students *students, n *int, studentScores studentScores, nStudentScore int) {
 	var idx, i int
 	idx = searchMahasiswaById(id, *students, *n)
 
 	if idx == -1 {
 		fmt.Printf("Data mahasiswa dengan id %d tidak ditemukan.\n", id)
+		return
+	}
+
+	_, length := searchMatkulByStudentId(students[idx].id, studentScores, nStudentScore)
+
+	if length > 0 {
+		fmt.Println("Data mahasiswa tidak bisa dihapus karena masih terdapat di nilai mahasiswa.")
 		return
 	}
 
@@ -265,7 +272,7 @@ func menuMatkul(courses *courses, n *int) {
 		var id int
 		fmt.Print("Pilih id untuk menghapus data matakuliah: ")
 		fmt.Scan(&id)
-		deleteMatkul(id, courses, n)
+		deleteMatkul(id, courses, n, studentScoresData, nstudentScores)
 		showMatkul(courses, n)
 		menuMatkul(courses, n)
 	} else if answer == 9 {
@@ -327,12 +334,19 @@ func editMatkul(id int, courses *courses, n *int) {
 	}
 }
 
-func deleteMatkul(id int, courses *courses, n *int) {
+func deleteMatkul(id int, courses *courses, n *int, studentScores studentScores, nStudentCourse int) {
 	var idx, i int
 	idx = searchMatkulById(id, *courses, *n)
 
 	if idx == -1 {
 		fmt.Printf("Data matakuliah dengan id %d tidak ditemukan.\n", id)
+		return
+	}
+
+	_, length := searchMatkulByMatkulId(courses[idx].id, studentScores, nStudentCourse)
+
+	if length > 0 {
+		fmt.Println("Data mata kuliah tidak bisa dihapus karena terdapat di data nilai mahasiswa.")
 		return
 	}
 
@@ -367,6 +381,20 @@ func searchMatkulByStudentId(studentId int, studentstudentScores studentScores, 
 
 	for i := 0; i < n; i++ {
 		if studentstudentScores[i].studentId == studentId {
+			ids[counter] = studentstudentScores[i].courseId
+			counter++
+		}
+	}
+
+	return ids, counter+1
+}
+
+func searchMatkulByMatkulId(matkulId int, studentstudentScores studentScores, n int) ([NMAX]int, int) {
+	var ids [NMAX]int
+	var counter int = 0
+
+	for i := 0; i < n; i++ {
+		if studentstudentScores[i].courseId == matkulId {
 			ids[counter] = studentstudentScores[i].courseId
 			counter++
 		}
