@@ -24,14 +24,21 @@ type studentScore struct {
 	grade string
 }
 
+type studentGroup struct {
+	name string
+	uts, uas, quiz, totalScore, totalSks float64
+}
+
 type students [NMAX]student
 type courses [NMAX]course
 type studentScores [NMAX]studentScore
+type studentSummary [NMAX]studentGroup
 
 var studentsData students
 var coursesData courses
 var studentScoresData studentScores
-var nStudent, nCourses, nstudentScores int
+var studentSummaryData studentSummary
+var nStudent, nCourses, nstudentScores, nStudentSummary int
 
 func main() {
 	var answer int
@@ -46,7 +53,7 @@ func main() {
 		menuMatkul(&coursesData, &nCourses)
 	} else if answer == 3 {
 		clear()
-		menuNilaiMahasiswa(&studentScoresData, studentsData, coursesData, nStudent, nCourses, &nstudentScores)
+		menuNilaiMahasiswa(&studentScoresData, studentsData, coursesData, studentSummaryData, nStudent, nCourses, nStudentSummary, &nstudentScores)
 	} else if answer == 4 {
 		clear()
 		transcript(studentsData, coursesData, studentScoresData, nStudent, nstudentScores)
@@ -88,7 +95,7 @@ func menuMahasiswa(students *students, n *int) {
 
 	if answer == 1 {
 		clear()
-		showMahasiswa(students, n)
+		showMahasiswa(*students, *n)
 		menuMahasiswa(students, n)
 	} else if answer == 2 {
 		clear()
@@ -100,7 +107,7 @@ func menuMahasiswa(students *students, n *int) {
 		fmt.Print("Pilih id untuk mengedit data mahasiswa: ")
 		fmt.Scan(&id)
 		editMahasiswa(id, students, n)
-		showMahasiswa(students, n)
+		showMahasiswa(*students, *n)
 		menuMahasiswa(students, n)
 	} else if answer == 4 {
 		clear()
@@ -108,7 +115,7 @@ func menuMahasiswa(students *students, n *int) {
 		fmt.Print("Pilih id untuk menghapus data mahasiswa: ")
 		fmt.Scan(&id)
 		deleteMahasiswa(id, students, n, studentScoresData, nstudentScores)
-		showMahasiswa(students, n)
+		showMahasiswa(*students, *n)
 		menuMahasiswa(students, n)
 	} else if answer == 9 {
 		clear()
@@ -116,13 +123,13 @@ func menuMahasiswa(students *students, n *int) {
 	}
 }
 
-func showMahasiswa(students *students, n *int) {
-	if *n == 0 {
+func showMahasiswa(students students, n int) {
+	if n == 0 {
 		fmt.Println("Data kosong.")
 		return
 	}
 
-	for i := 0; i < *n; i++ {
+	for i := 0; i < n; i++ {
 		data := students[i]
 		fmt.Println(data.id, data.nim, data.name)
 	}
@@ -182,13 +189,6 @@ func deleteMahasiswa(id int, students *students, n *int, studentScores studentSc
 
 	if idx == -1 {
 		fmt.Printf("Data mahasiswa dengan id %d tidak ditemukan.\n", id)
-		return
-	}
-
-	_, length := searchMatkulByStudentId(students[idx].id, studentScores, nStudentScore)
-
-	if length > 0 {
-		fmt.Println("Data mahasiswa tidak bisa dihapus karena masih terdapat di nilai mahasiswa.")
 		return
 	}
 
@@ -254,7 +254,7 @@ func menuMatkul(courses *courses, n *int) {
 
 	if answer == 1 {
 		clear()
-		showMatkul(courses, n)
+		showMatkul(*courses, *n)
 		menuMatkul(courses, n)
 	} else if answer == 2 {
 		clear()
@@ -266,7 +266,7 @@ func menuMatkul(courses *courses, n *int) {
 		fmt.Print("Pilih id untuk mengedit data matakuliah: ")
 		fmt.Scan(&id)
 		editMatkul(id, courses, n)
-		showMatkul(courses, n)
+		showMatkul(*courses, *n)
 		menuMatkul(courses, n)
 	} else if answer == 4 {
 		clear()
@@ -274,7 +274,7 @@ func menuMatkul(courses *courses, n *int) {
 		fmt.Print("Pilih id untuk menghapus data matakuliah: ")
 		fmt.Scan(&id)
 		deleteMatkul(id, courses, n, studentScoresData, nstudentScores)
-		showMatkul(courses, n)
+		showMatkul(*courses, *n)
 		menuMatkul(courses, n)
 	} else if answer == 9 {
 		clear()
@@ -282,14 +282,14 @@ func menuMatkul(courses *courses, n *int) {
 	}
 }
 
-func showMatkul(courses *courses, n *int) {
-	if *n == 0 {
+func showMatkul(courses courses, n int) {
+	if n == 0 {
 		clear()
 		fmt.Println("Data kosong.")
 		return
 	}
 
-	for i := 0; i < *n; i++ {
+	for i := 0; i < n; i++ {
 		data := courses[i]
 		fmt.Println(data.id, data.name)
 	}
@@ -344,13 +344,6 @@ func deleteMatkul(id int, courses *courses, n *int, studentScores studentScores,
 		return
 	}
 
-	_, length := searchMatkulByMatkulId(courses[idx].id, studentScores, nStudentCourse)
-
-	if length > 0 {
-		fmt.Println("Data mata kuliah tidak bisa dihapus karena terdapat di data nilai mahasiswa.")
-		return
-	}
-
 	i = idx
 	for i <= *n-2 {
 		courses[i] = courses[i+1]
@@ -381,7 +374,7 @@ func searchMatkulByStudentId(studentId int, studentstudentScores studentScores, 
 	var counter int = 0
 
 	for i := 0; i < n; i++ {
-		if studentstudentScores[i].studentId == studentId {
+		if studentstudentScores[i].studentId == studentId && studentstudentScores[i].studentId != 0 {
 			ids[counter] = studentstudentScores[i].courseId
 			counter++
 		}
@@ -390,21 +383,11 @@ func searchMatkulByStudentId(studentId int, studentstudentScores studentScores, 
 	return ids, counter + 1
 }
 
-func searchMatkulByMatkulId(matkulId int, studentstudentScores studentScores, n int) ([NMAX]int, int) {
-	var ids [NMAX]int
-	var counter int = 0
+func menuNilaiMahasiswa(studentScores *studentScores, 
+	students students, courses courses, studentSummary studentSummary,
+	nStudent, nCourse, nStudentSummary int, 
+	n *int) {
 
-	for i := 0; i < n; i++ {
-		if studentstudentScores[i].courseId == matkulId {
-			ids[counter] = studentstudentScores[i].courseId
-			counter++
-		}
-	}
-
-	return ids, counter+1
-}
-
-func menuNilaiMahasiswa(studentScores *studentScores, students students, courses courses, nStudent, nCourse int, n *int) {
 	fmt.Println("\n-----------------------------------------")
 	fmt.Print("\tAplikasi IGracias Console")
 	fmt.Println("\n-----------------------------------------")
@@ -415,6 +398,8 @@ func menuNilaiMahasiswa(studentScores *studentScores, students students, courses
 	fmt.Println("2. Tambah Data Nilai Mahasiswa")
 	fmt.Println("3. Edit Data Nilai Mahasiswa")
 	fmt.Println("4. Hapus Data Nilai Mahasiswa")
+	fmt.Println("5. Tampilkan Data Mahasiswa Berdasarkan Mata Kuliah")
+	fmt.Println("6. Tampilkan Data Mahasiswa secara Berurut")
 	fmt.Println("9. Kembali ke Menu Utama")
 	fmt.Println("-----------------------------------------")
 
@@ -424,32 +409,118 @@ func menuNilaiMahasiswa(studentScores *studentScores, students students, courses
 
 	if answer == 1 {
 		clear()
-		showNilaiMahasiswa(studentScores, students, courses, nStudent, nCourse, n)
-		menuNilaiMahasiswa(studentScores, students, courses, nStudent, nCourse, n)
+		showNilaiMahasiswa(*studentScores, students, courses, nStudent, nCourse, *n)
+		menuNilaiMahasiswa(studentScores, students, courses, studentSummary, nStudent, nCourse, nStudentSummary, n)
 	} else if answer == 2 {
 		clear()
 		inputNilaiMahasiswa(studentScores, students, courses, nStudent, nCourse, n)
-		menuNilaiMahasiswa(studentScores, students, courses, nStudent, nCourse, n)
+		menuNilaiMahasiswa(studentScores, students, courses, studentSummary, nStudent, nCourse, nStudentSummary, n)
 	} else if answer == 3 {
 		clear()
 		var id int
 		fmt.Print("Pilih id untuk mengedit data mahasiswa: ")
 		fmt.Scan(&id)
 		editNilaiMahasiswa(id, studentScores, n)
-		showNilaiMahasiswa(studentScores, students, courses, nStudent, nCourse, n)
-		menuNilaiMahasiswa(studentScores, students, courses, nStudent, nCourse, n)
+		showNilaiMahasiswa(*studentScores, students, courses, nStudent, nCourse, *n)
+		menuNilaiMahasiswa(studentScores, students, courses, studentSummary, nStudent, nCourse, nStudentSummary, n)
 	} else if answer == 4 {
 		clear()
 		var id int
 		fmt.Print("Pilih id untuk menghapus data mahasiswa: ")
 		fmt.Scan(&id)
 		deleteNilaiMahasiswa(id, studentScores, n)
-		showNilaiMahasiswa(studentScores, students, courses, nStudent, nCourse, n)
-		menuNilaiMahasiswa(studentScores, students, courses, nStudent, nCourse, n)
+		showNilaiMahasiswa(*studentScores, students, courses, nStudent, nCourse, *n)
+		menuNilaiMahasiswa(studentScores, students, courses, studentSummary, nStudent, nCourse, nStudentSummary, n)
+	} else if answer == 5 {
+		clear()
+		var id int
+		fmt.Print("Pilih id mata kuliah: ")
+		fmt.Scan(&id)
+		searchStudentByMatkulId(id, *studentScores, students, courses, nCourse, nStudent, *n)
+		menuNilaiMahasiswa(studentScores, students, courses, studentSummary, nStudent, nCourse, nStudentSummary, n)
+	} else if answer == 6 {
+		clear()
+		groupStudents(&studentSummary, &nStudentSummary, *studentScores, *n, students, nStudent)
+		showSortedNilaiMahasiswa(studentSummary, students, nstudentScores)
+		menuNilaiMahasiswa(studentScores, students, courses, studentSummary, nStudent, nCourse, nStudentSummary, n)
 	} else if answer == 9 {
 		clear()
 		main()
 	}
+}
+
+func groupStudents(
+	studentSummary *studentSummary, nStudentSummary *int, 
+	studentScores studentScores, nStudentScore int, 
+	students students, nStudent int) {
+
+	var mapping map[int]studentGroup = make(map[int]studentGroup)
+	var counter int = 0
+
+	for i := 0; i < nStudentScore; i++ {
+		var d studentScore = studentScores[i]
+		var studentName string = students[searchMahasiswaById(d.studentId, students, nStudent)].name
+
+		if v, ok := mapping[d.studentId]; ok {
+			v.quiz += d.quiz
+			v.uts += d.uts
+			v.uas += d.uas
+			v.totalSks += float64(d.sks)
+			v.totalScore += (d.quiz + d.uts + d.uas)
+			mapping[d.studentId] = v
+		} else {
+			var total float64 = d.quiz + d.uts + d.uas
+			mapping[d.studentId] = studentGroup{name: studentName, quiz: d.quiz, uts: d.uts, uas: d.uas, totalScore: total, totalSks: float64(d.sks) }
+		}
+
+		counter++
+	}
+
+	for i := 0; i < counter; i++ {
+		studentSummary[i] = mapping[i]
+	}
+}
+
+func showSortedNilaiMahasiswa(studentSummary studentSummary, students students, n int) {
+	var sort, field string
+
+	fmt.Print("Urutkan berdasarkan (total/quiz/uts/uas/sks): ")
+	fmt.Scan(&field)
+
+	fmt.Print("Urutkan berdasarkan: (asc/desc): ")
+	fmt.Scan(&sort)
+
+	sortNilaiMahasiswa(&studentSummary, n, sort, field)
+
+	for i := 0; i < n; i++ {
+		var data studentGroup = studentSummary[i]
+		fmt.Println(data.name, data.totalSks, data.quiz, data.uts, data.uas, data.totalScore)
+	}
+}
+
+func searchStudentByMatkulId(matkulId int, studentScores studentScores, studentsData students, courses courses, nCourse, nStudent, nStudentCourse int) {
+	var idx = searchMatkulById(matkulId, courses, nCourse)
+	var result students
+	var counter int = 0
+
+	if idx == -1 {
+		fmt.Println("Mata kuliah dengan id", matkulId, "tidak ditemukan.")
+		return
+	}
+
+	for i := 0; i < nStudentCourse; i++ {
+		if studentScores[i].courseId == courses[idx].id {
+			var idxStudent int = searchMahasiswaById(studentScores[i].studentId, studentsData, nStudent)
+
+			if idxStudent != -1 {
+				result[counter] = studentsData[idxStudent]
+				counter++
+			}
+		}
+	}
+
+	fmt.Println("Mata Kuliah:", courses[idx].name)
+	showMahasiswa(result, counter)
 }
 
 func editNilaiMahasiswa(id int, studentScores *studentScores, n *int) {
@@ -507,20 +578,20 @@ func deleteNilaiMahasiswa(id int, studentsScoresData *studentScores, n *int) {
 	*n--
 }
 
-func showNilaiMahasiswa(studentScores *studentScores, students students, courses courses, nStudent, nCourse int, n *int) {
-	if *n == 0 {
+func showNilaiMahasiswa(studentScores studentScores, students students, courses courses, nStudent, nCourse int, n int) {
+	if n == 0 {
 		fmt.Println("Data kosong.")
 		return
 	}
 
-	for i := 0; i < *n; i++ {
+	for i := 0; i < n; i++ {
 		var data studentScore = studentScores[i]
 		var idxStudent int = searchMahasiswaById(data.studentId, students, nStudent)
 		var idxCourse int = searchMatkulById(data.courseId, courses, nCourse)
 		var student student = students[idxStudent]
 		var course course = courses[idxCourse]
 
-		fmt.Println(data.id, student.nim, student.name, course.name, data.sks, data.quiz, data.uts, data.uas)
+		fmt.Println(data.id, student.nim, student.name, course.name, data.sks, data.quiz, data.uts, data.uas, data.grade)
 	}
 }
 
@@ -565,6 +636,7 @@ func inputNilaiMahasiswa(studentScores *studentScores, students students, course
 				fmt.Scan(&searchStudent)
 			} else {
 				searchStudent = false
+				active = false
 			}
 		}
 
@@ -588,6 +660,7 @@ func inputNilaiMahasiswa(studentScores *studentScores, students students, course
 				fmt.Scan(&searchCourse)
 			} else {
 				searchCourse = false
+				active = false
 			}
 		}
 
@@ -649,6 +722,7 @@ func transcript(students students, courses courses, studentScoresData studentSco
 				fmt.Scan(&searchStudent)
 			} else {
 				searchStudent = false
+				active = false
 			}
 		}
 
@@ -699,6 +773,56 @@ func calculateGrade(quiz, uts, uas float64) string {
 	}
 
 	return "-"
+}
+
+func sortNilaiMahasiswa(studentSummary *studentSummary, nStudentScores int, sort, field string) {
+	if field != "uas" && field != "total" && field != "uts" && field != "sks" && field != "quiz" {
+		fmt.Println("Mohon masukkan nama field yang disediakan!")
+		return
+	}
+
+	if sort != "asc" && sort != "desc" {
+		fmt.Println("Urutan tidak valid.")
+		return
+	}
+
+	for i := 0; i < nStudentScores-1; i++ {
+		var min int = i
+		
+		for j := i+1; j < nStudentScores; j++ {
+			var jData studentGroup = studentSummary[j]
+			var minData studentGroup = studentSummary[min]
+			var jInt, minInt float64 = 0, 0
+
+			if field == "sks" {
+				jInt = float64(jData.totalSks)
+				minInt = float64(minData.totalSks)
+			} else if field == "quiz" {
+				jInt = jData.quiz
+				minInt = minData.quiz
+			} else if field == "uas" {
+				jInt = jData.uas
+				minInt = minData.uas
+			} else if field == "uts" {
+				jInt = jData.uts
+				minInt = minData.uts
+			} else if field == "total" {
+				jInt = jData.totalScore
+				minInt = minData.totalScore
+			}
+
+			if sort == "asc" {
+				if jInt < minInt {
+					min = j
+				}
+			} else if sort == "desc" {
+				if jInt > minInt {
+					min = j
+				}
+			}
+		}
+		studentSummary[i], studentSummary[min] = studentSummary[min], studentSummary[i]
+	}
 }
 
 func clear() {
