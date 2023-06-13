@@ -454,7 +454,7 @@ func groupStudents(
 	studentScores studentScores, nStudentScore int, 
 	students students, nStudent int) {
 
-	var mapping map[int]studentGroup = make(map[int]studentGroup)
+	var mapping map[string]studentGroup = make(map[string]studentGroup)
 	var counter int = 0
 
 	for i := 0; i < nStudentScore; i++ {
@@ -462,24 +462,24 @@ func groupStudents(
 		var studentName string = students[searchMahasiswaById(d.studentId, students, nStudent)].name
 
 		if studentName != "" {
-			if v, ok := mapping[d.studentId]; ok {
+			if v, ok := mapping[studentName]; ok {
 				v.quiz += d.quiz
 				v.uts += d.uts
 				v.uas += d.uas
 				v.totalSks += float64(d.sks)
 				v.totalScore += (d.quiz + d.uts + d.uas)
-				mapping[d.studentId] = v
+				mapping[studentName] = v
 			} else if d.studentId != 0 {
 				var total float64 = d.quiz + d.uts + d.uas
-				mapping[d.studentId] = studentGroup{name: studentName, quiz: d.quiz, uts: d.uts, uas: d.uas, totalScore: total, totalSks: float64(d.sks) }
+				mapping[studentName] = studentGroup{name: studentName, quiz: d.quiz, uts: d.uts, uas: d.uas, totalScore: total, totalSks: float64(d.sks) }
 				counter++
 			}
 		}
 	}
 
-	for i := counter; i > 0; i-- {
-		studentSummary[i] = mapping[i]
-		fmt.Println(studentSummary[i])
+	for i := 0; i < counter; i++ {
+		var name string = students[i].name
+		studentSummary[i] = mapping[name]
 	}
 	
 	*nStudentSummary = counter
@@ -494,9 +494,9 @@ func showSortedNilaiMahasiswa(studentSummary studentSummary, students students, 
 	fmt.Print("Urutkan berdasarkan: (asc/desc): ")
 	fmt.Scan(&sort)
 
-	sortNilaiMahasiswa(&studentSummary, n, sort, field)
+	var isValid bool = sortNilaiMahasiswa(&studentSummary, n, sort, field)
 
-	for i := 0; i < n; i++ {
+	for i := 0; i < n && isValid; i++ {
 		var data studentGroup = studentSummary[i]
 		fmt.Println(data.name, data.totalSks, data.quiz, data.uts, data.uas, data.totalScore)
 	}
@@ -779,15 +779,15 @@ func calculateGrade(quiz, uts, uas float64) string {
 	return "-"
 }
 
-func sortNilaiMahasiswa(studentSummary *studentSummary, nStudentScores int, sort, field string) {
+func sortNilaiMahasiswa(studentSummary *studentSummary, nStudentScores int, sort, field string) bool {
 	if field != "uas" && field != "total" && field != "uts" && field != "sks" && field != "quiz" {
 		fmt.Println("Mohon masukkan nama field yang disediakan!")
-		return
+		return false
 	}
 
 	if sort != "asc" && sort != "desc" {
 		fmt.Println("Urutan tidak valid.")
-		return
+		return false
 	}
 
 	for i := 0; i < nStudentScores-1; i++ {
@@ -827,6 +827,7 @@ func sortNilaiMahasiswa(studentSummary *studentSummary, nStudentScores int, sort
 		}
 		studentSummary[i], studentSummary[min] = studentSummary[min], studentSummary[i]
 	}
+	return true
 }
 
 func clear() {
@@ -834,3 +835,4 @@ func clear() {
 	cmd.Stdout = os.Stdout
 	cmd.Run()
 }
+
