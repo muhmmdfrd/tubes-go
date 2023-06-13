@@ -441,7 +441,7 @@ func menuNilaiMahasiswa(studentScores *studentScores,
 	} else if answer == 6 {
 		clear()
 		groupStudents(&studentSummary, &nStudentSummary, *studentScores, *n, students, nStudent)
-		showSortedNilaiMahasiswa(studentSummary, students, nstudentScores)
+		showSortedNilaiMahasiswa(studentSummary, students, nStudentSummary)
 		menuNilaiMahasiswa(studentScores, students, courses, studentSummary, nStudent, nCourse, nStudentSummary, n)
 	} else if answer == 9 {
 		clear()
@@ -461,24 +461,28 @@ func groupStudents(
 		var d studentScore = studentScores[i]
 		var studentName string = students[searchMahasiswaById(d.studentId, students, nStudent)].name
 
-		if v, ok := mapping[d.studentId]; ok && d.studentId != 0 {
-			v.quiz += d.quiz
-			v.uts += d.uts
-			v.uas += d.uas
-			v.totalSks += float64(d.sks)
-			v.totalScore += (d.quiz + d.uts + d.uas)
-			mapping[d.studentId] = v
-		} else if d.studentId != 0 {
-			var total float64 = d.quiz + d.uts + d.uas
-			mapping[d.studentId] = studentGroup{name: studentName, quiz: d.quiz, uts: d.uts, uas: d.uas, totalScore: total, totalSks: float64(d.sks) }
+		if studentName != "" {
+			if v, ok := mapping[d.studentId]; ok {
+				v.quiz += d.quiz
+				v.uts += d.uts
+				v.uas += d.uas
+				v.totalSks += float64(d.sks)
+				v.totalScore += (d.quiz + d.uts + d.uas)
+				mapping[d.studentId] = v
+			} else if d.studentId != 0 {
+				var total float64 = d.quiz + d.uts + d.uas
+				mapping[d.studentId] = studentGroup{name: studentName, quiz: d.quiz, uts: d.uts, uas: d.uas, totalScore: total, totalSks: float64(d.sks) }
+				counter++
+			}
 		}
-
-		counter++
 	}
 
-	for i := 0; i < counter; i++ {
+	for i := counter; i > 0; i-- {
 		studentSummary[i] = mapping[i]
+		fmt.Println(studentSummary[i])
 	}
+	
+	*nStudentSummary = counter
 }
 
 func showSortedNilaiMahasiswa(studentSummary studentSummary, students students, n int) {
