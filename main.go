@@ -21,6 +21,7 @@ type course struct {
 type studentScore struct {
 	id, studentId, courseId, sks int
 	uts, uas, quiz               float64
+	grade string
 }
 
 type students [NMAX]student
@@ -484,6 +485,9 @@ func editNilaiMahasiswa(id int, studentScores *studentScores, n *int) {
 	if s.uas != 0 {
 		studentScores[idx].uas = s.uas
 	}
+
+	var ss studentScore = studentScores[idx]
+	studentScores[idx].grade = calculateGrade(ss.quiz, ss.uts, ss.uas)
 }
 
 func deleteNilaiMahasiswa(id int, studentsScoresData *studentScores, n *int) {
@@ -603,6 +607,8 @@ func inputNilaiMahasiswa(studentScores *studentScores, students students, course
 			fmt.Scan(&ss.uts)
 			fmt.Print("UAS: ")
 			fmt.Scan(&ss.uas)
+
+			ss.grade = calculateGrade(ss.quiz, ss.uts, ss.uas)
 	
 			ss.courseId = courses[courseIdx].id
 			ss.studentId = students[studentIdx].id
@@ -670,6 +676,28 @@ func transcript(students students, courses courses, studentScoresData studentSco
 	}
 	clear()
 	main()
+}
+
+func calculateGrade(quiz, uts, uas float64) string {
+	var total float64 = (quiz + uts + uas) / 3
+	
+	if 80 < total {
+		return "A"
+	} else if 70 < total && total <= 80 {
+		return "AB"
+	} else if 65 < total && total <= 70 {
+		return "B"
+	} else if 60 < total && total <= 65 {
+		return "BC"
+	} else if 50 < total && total <= 60 {
+		return "C"
+	} else if 40 < total && total <= 50 {
+		return "D"
+	} else if total <= 40 {
+		return "E"
+	}
+
+	return "-"
 }
 
 func clear() {
