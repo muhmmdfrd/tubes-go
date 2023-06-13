@@ -380,7 +380,7 @@ func searchMatkulByStudentId(studentId int, studentstudentScores studentScores, 
 		}
 	}
 
-	return ids, counter + 1
+	return ids, counter
 }
 
 func menuNilaiMahasiswa(studentScores *studentScores, 
@@ -709,11 +709,12 @@ func transcript(students students, courses courses, studentScoresData studentSco
 	fmt.Println("\n-----------------------------------------")
 
 	var active bool = true
+
 	for active {
 		var searchStudent bool = true
 		var idx int = -1
 
-		for searchStudent {
+		for {
 			var nim string
 			fmt.Print("Cari nilai mahasiswa berdasarkan NIM: ")
 			fmt.Scan(&nim)
@@ -722,31 +723,45 @@ func transcript(students students, courses courses, studentScoresData studentSco
 
 			if idx == -1 {
 				fmt.Printf("Data mahasiswa dengan NIM %s tidak ditemukan.\n", nim)
-				fmt.Print("Apakah Anda ingin memasukkan kembali ID mahasiswa? (true/false): ")
+				fmt.Print("Apakah Anda ingin memasukkan kembali NIM mahasiswa? (true/false): ")
 				fmt.Scan(&searchStudent)
+
+				if !searchStudent {
+					active = false
+					break
+				}
 			} else {
-				searchStudent = false
 				active = false
+				break
 			}
 		}
 
 		if idx != -1 {
 			var student student = students[idx]
-			var courseIds, length = searchMatkulByStudentId(student.id, studentScoresData, nstudentScores)
-			var result studentScores
+			var ids, length = searchMatkulByStudentId(student.id, studentScoresData, nstudentScores)
 			var counter int = 0
-
-			for i := 0; i < nstudentScores; i++ {
-				for j := 0; j < length; j++ {
-					if studentScoresData[i].courseId == courseIds[j] {
-						result[counter] = studentScoresData[i]
+			var result studentScores
+			var mapping map[string]studentScore = make(map[string]studentScore)
+			
+			for i := 0; i < length; i++ {
+				for j := 0; j < nstudentScores; j++ {
+					if _, ok := mapping[courses[i].name]; !ok {
+						mapping[courses[i].name] = studentScoresData[j]
 						counter++
 					}
 				}
 			}
 
+			for i := 0; i < length; i++ {
+				var idx int = searchMatkulById(ids[i], courses, nCourses)
+				
+				if idx != -1 {
+					result[i] = mapping[courses[idx].name]
+				}
+			}
+
 			for i := 0; i < counter; i++ {
-				fmt.Println(student.nim, student.name, courses[i].name, studentScoresData[i].sks, studentScoresData[i].quiz, studentScoresData[i].uts, studentScoresData[i].uas)
+				fmt.Println(student.nim, student.name, courses[i].name, result[i].sks, result[i].quiz, result[i].uts, result[i].uas)
 			}
 
 			fmt.Print("Apakah Anda ingin melanjutkan menampilkan transkrip nilai mahasiswa? (true/false): ")
