@@ -461,14 +461,14 @@ func groupStudents(
 		var d studentScore = studentScores[i]
 		var studentName string = students[searchMahasiswaById(d.studentId, students, nStudent)].name
 
-		if v, ok := mapping[d.studentId]; ok {
+		if v, ok := mapping[d.studentId]; ok && d.studentId != 0 {
 			v.quiz += d.quiz
 			v.uts += d.uts
 			v.uas += d.uas
 			v.totalSks += float64(d.sks)
 			v.totalScore += (d.quiz + d.uts + d.uas)
 			mapping[d.studentId] = v
-		} else {
+		} else if d.studentId != 0 {
 			var total float64 = d.quiz + d.uts + d.uas
 			mapping[d.studentId] = studentGroup{name: studentName, quiz: d.quiz, uts: d.uts, uas: d.uas, totalScore: total, totalSks: float64(d.sks) }
 		}
