@@ -744,31 +744,27 @@ func transcript(students students, courses courses, studentScoresData studentSco
 			var student student = students[idx]
 			var ids, length = searchMatkulByStudentId(student.id, studentScoresData, nstudentScores)
 			var counter int = 0
-			var result studentScores
 			var mapping map[string]studentScore = make(map[string]studentScore)
 
 			for i := 0; i < length; i++ {
 				for j := 0; j < nstudentScores; j++ {
-					if _, ok := mapping[courses[i].name]; !ok && 
-						studentScoresData[j].quiz != 0 && 
-						studentScoresData[j].uas != 0 && 
-						studentScoresData[j].uts != 0 {
-						mapping[courses[i].name] = studentScoresData[j]
-						counter++
+					var idx int = searchMatkulById(ids[i], courses, nCourses)
+				
+					if idx != -1 {
+						if _, ok := mapping[courses[i].name]; !ok && 
+						studentScoresData[j].courseId == ids[i] && studentScoresData[j].studentId == student.id {
+							mapping[courses[idx].name] = studentScoresData[j]
+							counter++
+						}
 					}
 				}
 			}
 
-			for i := 0; i < length; i++ {
-				var idx int = searchMatkulById(ids[i], courses, nCourses)
-				
-				if idx != -1 {
-					result[i] = mapping[courses[idx].name]
-				}
-			}
-
 			for i := 0; i < counter; i++ {
-				fmt.Println(student.nim, student.name, courses[i].name, result[i].sks, result[i].quiz, result[i].uts, result[i].uas)
+				var idx int = searchMatkulById(ids[i], courses, nCourses)
+				var courseName string = courses[idx].name
+				var mapData studentScore = mapping[courseName]
+				fmt.Println(student.nim, student.name, courseName, mapData.sks, mapData.quiz, mapData.uts, mapData.uas)
 			}
 
 			fmt.Print("Apakah Anda ingin melanjutkan menampilkan transkrip nilai mahasiswa? (true/false): ")
