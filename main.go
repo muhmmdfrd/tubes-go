@@ -218,19 +218,21 @@ func searchMahasiswaById(id int, students students, n int) int {
 }
 
 func searchMahasiswaByNim(nim string, students students, n int) int {
-	var start int = 0
-	var end int = n - 1
+	var low int = 0
+	var high int = n - 1
 
-	for start <= end {
-		var mid int = start + (end-start)/2
+	for low <= high {
+		mid := (low + high) / 2
+
 		if students[mid].nim == nim {
 			return mid
 		} else if students[mid].nim < nim {
-			start = mid + 1
+			low = mid + 1
 		} else {
-			end = mid - 1
+			high = mid - 1
 		}
 	}
+
 	return -1
 }
 
@@ -719,6 +721,8 @@ func transcript(students students, courses courses, studentScoresData studentSco
 			fmt.Print("Cari nilai mahasiswa berdasarkan NIM: ")
 			fmt.Scan(&nim)
 
+			sortStudentByNim(&students, nStudent)
+
 			idx = searchMahasiswaByNim(nim, students, nStudent)
 
 			if idx == -1 {
@@ -742,7 +746,7 @@ func transcript(students students, courses courses, studentScoresData studentSco
 			var counter int = 0
 			var result studentScores
 			var mapping map[string]studentScore = make(map[string]studentScore)
-			
+
 			for i := 0; i < length; i++ {
 				for j := 0; j < nstudentScores; j++ {
 					if _, ok := mapping[courses[i].name]; !ok {
@@ -843,6 +847,20 @@ func sortNilaiMahasiswa(studentSummary *studentSummary, nStudentScores int, sort
 		studentSummary[i], studentSummary[min] = studentSummary[min], studentSummary[i]
 	}
 	return true
+}
+
+func sortStudentByNim(students *students, n int) {
+	for i := 1; i < n; i++ {
+		var temp student = students[i]
+		var j int = i - 1
+
+		for j >= 0 && students[j].nim > temp.nim {
+			students[j+1] = students[j]
+			j--
+		}
+
+		students[j+1] = temp
+	}
 }
 
 func clear() {
