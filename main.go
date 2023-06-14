@@ -749,7 +749,10 @@ func transcript(students students, courses courses, studentScoresData studentSco
 
 			for i := 0; i < length; i++ {
 				for j := 0; j < nstudentScores; j++ {
-					if _, ok := mapping[courses[i].name]; !ok {
+					if _, ok := mapping[courses[i].name]; !ok && 
+						studentScoresData[j].quiz != 0 && 
+						studentScoresData[j].uas != 0 && 
+						studentScoresData[j].uts != 0 {
 						mapping[courses[i].name] = studentScoresData[j]
 						counter++
 					}
