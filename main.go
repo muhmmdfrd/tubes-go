@@ -104,6 +104,7 @@ func menuMahasiswa(students *students, n *int) {
 	} else if answer == 3 {
 		clear()
 		var id int
+		showMahasiswa(*students, *n)
 		fmt.Print("Pilih id untuk mengedit data mahasiswa: ")
 		fmt.Scan(&id)
 		editMahasiswa(id, students, n)
@@ -111,6 +112,7 @@ func menuMahasiswa(students *students, n *int) {
 		menuMahasiswa(students, n)
 	} else if answer == 4 {
 		clear()
+		showMahasiswa(*students, *n)
 		var id int
 		fmt.Print("Pilih id untuk menghapus data mahasiswa: ")
 		fmt.Scan(&id)
@@ -264,6 +266,7 @@ func menuMatkul(courses *courses, n *int) {
 		menuMatkul(courses, n)
 	} else if answer == 3 {
 		clear()
+		showMatkul(*courses, *n)
 		var id int
 		fmt.Print("Pilih id untuk mengedit data matakuliah: ")
 		fmt.Scan(&id)
@@ -272,6 +275,7 @@ func menuMatkul(courses *courses, n *int) {
 		menuMatkul(courses, n)
 	} else if answer == 4 {
 		clear()
+		showMatkul(*courses, *n)
 		var id int
 		fmt.Print("Pilih id untuk menghapus data matakuliah: ")
 		fmt.Scan(&id)
@@ -631,6 +635,7 @@ func inputNilaiMahasiswa(studentScores *studentScores, students students, course
 		var searchStudent bool = true
 
 		for searchStudent {
+			showMahasiswa(students, nStudent)
 			var idx int
 			fmt.Print("Masukkan ID Mahasiswa: ")
 			fmt.Scan(&idx)
@@ -654,6 +659,7 @@ func inputNilaiMahasiswa(studentScores *studentScores, students students, course
 		var searchCourse bool = true
 
 		for searchCourse {
+			showMatkul(courses, nCourse)
 			var idx int
 			fmt.Print("Masukkan ID Mata Kuliah: ")
 			fmt.Scan(&idx)
@@ -717,6 +723,7 @@ func transcript(students students, courses courses, studentScoresData studentSco
 		var idx int = -1
 
 		for {
+			showMahasiswa(students, nStudent)
 			var nim string
 			fmt.Print("Cari nilai mahasiswa berdasarkan NIM: ")
 			fmt.Scan(&nim)
